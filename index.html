@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEXORA Corp · Gestão de Funcionários</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===================== LOGIN ===================== -->
+  <section id="login-view" class="login-view">
+    <div class="login-card">
+      <aside class="login-side">
+        <div class="brand light">
+          <div class="logo"><span></span><span></span><span></span></div>
+          <strong>NEXORA</strong>
+        </div>
+        <h2>Gestão de pessoas,<br />simples e organizada.</h2>
+        <p>Acesse o painel administrativo para cadastrar, consultar e atualizar os funcionários da empresa.</p>
+      </aside>
+
+      <form id="login-form" class="login-form" autocomplete="off">
+        <h1>Acesso do administrador</h1>
+        <p class="hint">Entre com suas credenciais para continuar.</p>
+
+        <div id="login-error" class="form-error hidden" role="alert"></div>
+
+        <label>E-mail
+          <input type="email" id="l-email" placeholder="seu@email.com" required />
+        </label>
+        <label>Senha
+          <div class="pass-wrap">
+            <input type="password" id="l-senha" placeholder="••••••••" required />
+            <button type="button" id="toggle-pass" class="link-btn" aria-label="Mostrar senha">mostrar</button>
+          </div>
+        </label>
+
+        <button type="submit" class="btn primary block">Entrar</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===================== SISTEMA ===================== -->
+  <div id="app-view" class="hidden">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo"><span></span><span></span><span></span></div>
+        <strong>NEXORA</strong><em>Gestão de Funcionários</em>
+      </div>
+      <div class="user-box">
+        <span id="conn-dot" class="dot off" title="Conexão com o banco"></span>
+        <span id="conn-text" class="conn-text">offline</span>
+        <span class="user-chip"><i>A</i> Administrador</span>
+        <button id="btn-logout" class="btn ghost small">Sair</button>
+      </div>
+    </header>
+
+    <main class="container">
+      <div id="config-warning" class="alert hidden">
+        Supabase não vinculado. Edite o <b>script.js</b> e preencha
+        <code>SUPABASE_URL</code> e <code>SUPABASE_ANON_KEY</code>.
+      </div>
+
+      <div class="page-head">
+        <div>
+          <h1>Funcionários</h1>
+          <p>Cadastre, consulte, edite e exclua os colaboradores da empresa.</p>
+        </div>
+        <button id="btn-new" class="btn primary">+ Novo funcionário</button>
+      </div>
+
+      <section class="stats">
+        <div class="stat"><small>Funcionários</small><span id="stat-total">0</span></div>
+        <div class="stat"><small>Departamentos</small><span id="stat-deps">0</span></div>
+        <div class="stat"><small>Folha mensal</small><span id="stat-folha">R$ 0,00</span></div>
+      </section>
+
+      <section class="toolbar">
+        <input type="search" id="search" placeholder="Buscar por nome, e-mail ou cargo..." />
+        <select id="filter-dep"><option value="">Todos os departamentos</option></select>
+      </section>
+
+      <section class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Funcionário</th><th>Cargo</th><th>Departamento</th><th>Telefone</th><th>Salário</th><th>Cadastro</th><th class="right">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <tr><td colspan="7" class="empty">Carregando...</td></tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL CRIAR / EDITAR -->
+  <div id="modal" class="modal hidden">
+    <form id="form" class="modal-box">
+      <h2 id="modal-title">Novo funcionário</h2>
+      <input type="hidden" id="f-id" />
+
+      <label>Nome completo
+        <input type="text" id="f-nome" required maxlength="200" />
+      </label>
+      <label>E-mail
+        <input type="email" id="f-email" required maxlength="200" />
+      </label>
+      <div class="row">
+        <label>Telefone
+          <input type="text" id="f-telefone" maxlength="20" placeholder="(11) 99999-9999" />
+        </label>
+        <label>Salário (R$)
+          <input type="number" id="f-salario" min="0" step="0.01" value="0" />
+        </label>
+      </div>
+      <div class="row">
+        <label>Cargo
+          <input type="text" id="f-cargo" required maxlength="100" />
+        </label>
+        <label>Departamento
+          <input type="text" id="f-departamento" required maxlength="100" list="deps" />
+          <datalist id="deps"></datalist>
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" id="btn-cancel" class="btn ghost">Cancelar</button>
+        <button type="submit" class="btn primary">Salvar</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- MODAL CONFIRMAR EXCLUSÃO -->
+  <div id="confirm" class="modal hidden">
+    <div class="modal-box small">
+      <h2>Excluir funcionário</h2>
+      <p id="confirm-text"></p>
+      <div class="modal-actions">
+        <button id="btn-confirm-no" class="btn ghost">Cancelar</button>
+        <button id="btn-confirm-yes" class="btn danger">Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="script.js"></script>
+</body>
+</html>
